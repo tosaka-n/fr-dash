@@ -1,0 +1,23 @@
+{
+  "name": "fr-dash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dash.js",
+  "bin": {
+    "fr-dash": "dash.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "in": "node dash in",
+    "out": "node dash out",
+    "begin": "node dash begin",
+    "end": "node dash end"
+  },
+  "author": "tosaka-n",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^7.0.0",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1"
+  }
+}
