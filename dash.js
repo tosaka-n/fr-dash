@@ -2,8 +2,9 @@
 'use strict'
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "./.env") });
 const { Command } = require("commander");
-dotenv.config();
 const fs = require('fs').promises;
 
 const HR_BASE_URL = 'https://api.freee.co.jp/hr/api/v1/';
@@ -18,19 +19,19 @@ const channel = process.env.channel;
 const clocks = {
   in: {
     type: 'clock_in',
-    text: "リモート開始します"
+    text: "出勤"
   },
   begin: {
     type: 'break_begin',
-    text: '休憩します'
+    text: '休憩'
   },
   end: {
     type: 'break_end',
-    text: '再開します'
+    text: '再開'
   },
   out: {
     type: 'clock_out',
-    text: 'リモート終了します'
+    text: '退勤'
   },
 };
 const program = new Command();
@@ -104,7 +105,7 @@ async function udpateToken() {
     icon_url
   };
 
-  await fs.writeFile('.env',
+  await fs.writeFile(path.join(__dirname, "./.env"),
     Object.keys(updated).map(v => `${v}=${updated[v]}`).join('\n')
   )
   return updated;
