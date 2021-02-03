@@ -11,7 +11,8 @@ const HR_BASE_URL = 'https://api.freee.co.jp/hr/api/v1/';
 const REFRESH_TOKEN_URL = 'https://accounts.secure.freee.co.jp/public_api/token';
 const freee_token = process.env.freee_token;
 const refresh_token = process.env.refresh_token;
-const webhook_url = process.env.webhook_url;
+const post_message_url = "https://slack.com/api/chat.postMessage";
+const slack_token = process.env.slack_token;
 const username = process.env.username;
 const icon_url = process.env.icon_url;
 const channel = process.env.channel;
@@ -100,7 +101,7 @@ async function udpateToken() {
     client_id,
     client_secret,
     channel,
-    webhook_url,
+    slack_token,
     username,
     icon_url
   };
@@ -149,26 +150,15 @@ function timestampToTime(date) {
 }
 
 async function sendMessage(text) {
-  console.log(JSON.stringify({
-    text,
-    channel,
-    username,
-    icon_url
-  }))
   const options = {
     method: 'POST',
-    headers: {
-      "Content-Type": "application/json; charset=UTF-8"
-    },
+    headers: createAuthHeader(slack_token),
     body: JSON.stringify({
       text,
       channel,
-      username,
-      icon_url
     })
   };
-  // NOTE: ここは「ok」しか返ってこない
-  const result = await (await fetch(`${webhook_url}`, options)).text();
+  const result = await (await fetch(`${post_message_url}`, options)).json();
   console.log(result);
 }
 
