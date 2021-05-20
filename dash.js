@@ -4,17 +4,16 @@ const fetch = require("node-fetch");
 const dotenv = require("dotenv");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "./.env") });
-const { Command } = require("commander");
+const { Command, option } = require("commander");
 const fs = require('fs').promises;
 
 const HR_BASE_URL = 'https://api.freee.co.jp/hr/api/v1/';
 const REFRESH_TOKEN_URL = 'https://accounts.secure.freee.co.jp/public_api/token';
+const post_change_status = 'https://slack.com/api/users.profile.set';
 const freee_token = process.env.freee_token;
 const refresh_token = process.env.refresh_token;
 const post_message_url = "https://slack.com/api/chat.postMessage";
 const slack_token = process.env.slack_token;
-const username = process.env.username;
-const icon_url = process.env.icon_url;
 const channel = process.env.channel;
 
 const clocks = {
@@ -63,7 +62,7 @@ async function punchHandler(command) {
     process.exit(0);
   }
 }
-  
+
 async function punch(status) {
   console.log(status)
   const tokens = await udpateToken();
@@ -75,7 +74,7 @@ async function punch(status) {
     throw new Error(`not abailable: ${abailable.available_types}`);
   }
   await changeStatus(tokens.freee_token, userId, companyId, clocks[status].type);
-  await sendMessage(clocks[status].text);
+  await sendMessage(clocks[status].text, channel);
 };
 
 async function udpateToken() {
@@ -102,8 +101,6 @@ async function udpateToken() {
     client_secret,
     channel,
     slack_token,
-    username,
-    icon_url
   };
 
   await fs.writeFile(path.join(__dirname, "./.env"),
@@ -149,16 +146,32 @@ function timestampToTime(date) {
   return `${yyyy}-${MM}-${dd}`;
 }
 
-async function sendMessage(text) {
+async function sendMessage(text, paramCh) {
   const options = {
     method: 'POST',
     headers: createAuthHeader(slack_token),
     body: JSON.stringify({
       text,
-      channel,
+      channel: paramCh,
     })
   };
   const result = await (await fetch(`${post_message_url}`, options)).json();
+  console.log(result);
+}
+
+async function slackStatus(emoji, message) {
+  const options = {
+    method: 'POST',
+    headers: createAuthHeader(slack_token),
+    body: JSON.stringify({
+      profile: {
+        status_text: message,
+        status_emoji: emoji,
+      }
+    })
+  };
+  console.log(options);
+  const result = await (await fetch(`${post_change_status}`, options)).json();
   console.log(result);
 }
 
@@ -169,7 +182,7 @@ function createAuthHeader(token) {
   };
 }
 
-function defaultGETOption(token){
+function defaultGETOption(token) {
   return {
     method: 'GET',
     headers: {
