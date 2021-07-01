@@ -30,9 +30,11 @@ _npmを用いるため、npmを先にインストールしてください_
   - 退勤時: `fr-dash out`
   - 休憩開始時: `fr-dash begin`
   - 休憩終了時: `fr-dash end`
+  - 打刻時刻確認: `fr-dash status`
 
 ## コマンド
   - in  : 出勤
   - out : 退勤
   - begin : 休憩開始
   - end : 休憩終了
+  - status : 打刻時刻確認
