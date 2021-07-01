@@ -69,9 +69,13 @@ async function punch(status) {
   const userInfo = await getUserId(tokens.freee_token);
   const userId = userInfo.companies[0].employee_id;
   const companyId = userInfo.companies[0].id;
-  const abailable = await getabailable(tokens.freee_token, userId, companyId);
-  if (!abailable.available_types.includes(clocks[status].type)) {
-    throw new Error(`not abailable: ${abailable.available_types}`);
+  const available = await getAvailable(tokens.freee_token, userId, companyId);
+  if (status === 'status') {
+    console.log(await getStatus(tokens.freee_token, userId, companyId))
+    return;
+  }
+  if (!available.available_types.includes(clocks[status].type)) {
+    throw new Error(`not available: ${available.available_types}`);
   }
   await changeStatus(tokens.freee_token, userId, companyId, clocks[status].type);
   await sendMessage(clocks[status].text, channel);
@@ -116,7 +120,7 @@ async function getUserId(token) {
   return result;
 }
 
-async function getabailable(token, userId, companyId) {
+async function getAvailable(token, userId, companyId) {
   const options = defaultGETOption(token)
   const result = await (await fetch(`${HR_BASE_URL}/employees/${userId}/time_clocks/available_types?company_id=${companyId}`, options)).json();
   console.log(result);
@@ -190,4 +194,12 @@ function defaultGETOption(token) {
       "Content-Type": "application/json; charset=UTF-8"
     }
   };
+}
+
+async function getStatus(token, userId, companyId) {
+  const options = defaultGETOption(token);
+  const date = new Date().toISOString().slice(0, 10);
+  const STATUS_URL = `${HR_BASE_URL}/employees/${userId}/time_clocks/?from_date=${date}&company_id=${companyId}`;
+  const result = await (await fetch(STATUS_URL, options)).json();
+  return result.reverse().map(data => `${new Date(data.datetime).toLocaleString()}: ${clocks[data.type.split('_')[1]].text}`).join("\n")
 }

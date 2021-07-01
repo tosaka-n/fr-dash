@@ -11,3 +11,4 @@ punch in/out [freee](https://p.secure.freee.co.jp/) and post to Slack from cli
   - punch out: `fr-dash out`
   - begin break time: `fr-dash begin`
   - end break time: `fr-dash end`
+  - show punch time: `fr-dash status`
