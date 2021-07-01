@@ -15,6 +15,7 @@ _npmを用いるため、npmを先にインストールしてください_
   - Slack投稿に必要なものは下記です(.env.sampleに定義済み)  
     一度freeeのトークンとリフレッシュトークンを取得する必要があります(ログインが必要)  
     また、Slack Incomming Webhookを利用し、打刻するユーザと同じアイコン/名前にすることでユーザが投稿しているように見せかけることができます
+    Slack Tokenを利用する場合は[slack_tokenブランチ](https://github.com/tosaka-n/fr-dash/tree/slack_token)を参考にしてください
     - freee_token
     - refresh_token
     - client_id
