@@ -7,7 +7,7 @@ require("dotenv").config({ path: path.join(__dirname, "./.env") });
 const { Command, option } = require("commander");
 const fs = require('fs').promises;
 
-const HR_BASE_URL = 'https://api.freee.co.jp/hr/api/v1/';
+const HR_BASE_URL = 'https://api.freee.co.jp/hr/api/v1';
 const REFRESH_TOKEN_URL = 'https://accounts.secure.freee.co.jp/public_api/token';
 const post_change_status = 'https://slack.com/api/users.profile.set';
 const freee_token = process.env.freee_token;
